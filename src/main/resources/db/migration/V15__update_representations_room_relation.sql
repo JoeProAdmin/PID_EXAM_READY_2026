@@ -1,5 +1,5 @@
 ALTER TABLE representations
-    ADD COLUMN room_id BIGINT NULL;
+    ADD COLUMN room_id BIGINT;
 
 UPDATE representations SET room_id = 1 WHERE id = 1;
 UPDATE representations SET room_id = 2 WHERE id = 2;
@@ -17,4 +17,7 @@ ALTER TABLE representations
             ON DELETE RESTRICT;
 
 ALTER TABLE representations
-DROP COLUMN location_id;
+    DROP FOREIGN KEY representations_location_id_a6832141_fk_locations_id;
+
+ALTER TABLE representations
+    DROP COLUMN location_id;

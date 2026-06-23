@@ -9,23 +9,29 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RepresentationService {
+
 	@Autowired
 	private RepresentationRepository repository;
-	
-	
+
 	public List<Representation> getAll() {
+
 		List<Representation> representations = new ArrayList<>();
-		
+
 		repository.findAll().forEach(representations::add);
-		
+
 		return representations;
 	}
-	
+
 	public Representation get(String id) {
+
 		Long indice = (long) Integer.parseInt(id);
-		Optional<Representation> representation = repository.findById(indice); 
-		
-		return representation.isPresent() ? representation.get() : null;
+
+		Optional<Representation> representation =
+				repository.findById(indice);
+
+		return representation.isPresent()
+				? representation.get()
+				: null;
 	}
 
 	public void add(Representation representation) {
@@ -37,15 +43,16 @@ public class RepresentationService {
 	}
 
 	public void delete(String id) {
+
 		Long indice = (long) Integer.parseInt(id);
-		
+
 		repository.deleteById(indice);
 	}
 
-	public List<Representation> getFromLocation(Location location) {
-		return repository.findByLocation(location);
+	public List<Representation> getFromRoom(Room room) {
+		return repository.findByRoom(room);
 	}
-	
+
 	public List<Representation> getFromShow(Show show) {
 		return repository.findByShow(show);
 	}

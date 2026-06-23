@@ -2,7 +2,7 @@ CREATE TABLE rooms (
                        id BIGINT NOT NULL AUTO_INCREMENT,
                        name VARCHAR(60) NOT NULL,
                        seats SMALLINT NOT NULL,
-                       location_id BIGINT NOT NULL,
+                       location_id INT NOT NULL,
                        PRIMARY KEY (id),
                        UNIQUE (name),
                        CONSTRAINT fk_rooms_locations
