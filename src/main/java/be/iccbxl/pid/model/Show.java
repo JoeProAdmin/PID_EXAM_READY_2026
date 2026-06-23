@@ -168,15 +168,9 @@ public class Show {
 		
 		return this;
 	}
-	
+
 	public Show removeRepresentation(Representation representation) {
-		if(this.representations.contains(representation)) {
-			this.representations.remove(representation);
-			if(representation.getLocation().equals(this)) {
-				representation.setLocation(null);
-			}
-		}
-		
+		this.representations.remove(representation);
 		return this;
 	}
 

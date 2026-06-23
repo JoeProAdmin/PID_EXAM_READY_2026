@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,31 +25,25 @@ public class Representation {
 	@JoinColumn(name="show_id", nullable=false)
 	private Show show;
 
-	/**
-	 * Date de création de la représentation
-	 */
 	private LocalDateTime when;
-	
-	/**
-	 * Lieu de prestation de la représentation
-	 */
+
 	@ManyToOne
-	@JoinColumn(name="location_id", nullable=true)
-	private Location location;
-	
+	@JoinColumn(name="room_id", nullable=false)
+	private Room room;
+
 	@ManyToMany
 	@JoinTable(
-		  name = "reservations", 
-		  joinColumns = @JoinColumn(name = "representation_id"), 
-		  inverseJoinColumns = @JoinColumn(name = "user_id"))
+			name = "reservations",
+			joinColumns = @JoinColumn(name = "representation_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> users = new ArrayList<>();
 
 	public Representation() { }
-	
-	public Representation(Show show, LocalDateTime when, Location location) {
+
+	public Representation(Show show, LocalDateTime when, Room room) {
 		this.show = show;
 		this.when = when;
-		this.location = location;
+		this.room = room;
 	}
 
 	public Show getShow() {
@@ -69,18 +62,18 @@ public class Representation {
 		this.when = when;
 	}
 
-	public Location getLocation() {
-		return location;
+	public Room getRoom() {
+		return room;
 	}
 
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 
 	public Long getId() {
 		return id;
 	}
-	
+
 	public List<User> getUsers() {
 		return users;
 	}
@@ -90,23 +83,22 @@ public class Representation {
 			this.users.add(user);
 			user.addRepresentation(this);
 		}
-		
+
 		return this;
 	}
-	
+
 	public Representation removeUser(User user) {
 		if(this.users.contains(user)) {
 			this.users.remove(user);
 			user.getRepresentations().remove(this);
 		}
-		
+
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "Representation [id=" + id + ", show=" + show + ", when=" + when 
-				+ ", location=" + location + "]";
+		return "Representation [id=" + id + ", show=" + show + ", when=" + when
+				+ ", room=" + room + "]";
 	}
-	
 }

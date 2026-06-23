@@ -143,20 +143,13 @@ public class Location {
 	public Location addRepresentation(Representation representation) {
 		if(!this.representations.contains(representation)) {
 			this.representations.add(representation);
-			representation.setLocation(this);
 		}
-		
+
 		return this;
 	}
-	
+
 	public Location removeRepresentation(Representation representation) {
-		if(this.representations.contains(representation)) {
-			this.representations.remove(representation);
-			if(representation.getLocation().equals(this)) {
-				representation.setLocation(null);
-			}
-		}
-		
+		this.representations.remove(representation);
 		return this;
 	}
 
