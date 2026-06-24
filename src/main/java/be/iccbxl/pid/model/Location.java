@@ -38,7 +38,8 @@ public class Location {
 
 	@OneToMany(targetEntity = Show.class, mappedBy = "location")
 	private List<Show> shows = new ArrayList<>();
-
+	@OneToMany(targetEntity = Room.class, mappedBy = "location")
+	private List<Room> rooms = new ArrayList<>();
 	protected Location() {
 	}
 
@@ -124,6 +125,9 @@ public class Location {
 		return shows;
 	}
 
+	public List<Room> getRooms() {
+		return rooms;
+	}
 	public Location addShow(Show show) {
 
 		if (!this.shows.contains(show)) {
@@ -148,6 +152,30 @@ public class Location {
 		return this;
 	}
 
+	public Location addRoom(Room room) {
+
+		if (!this.rooms.contains(room)) {
+			this.rooms.add(room);
+			room.setLocation(this);
+		}
+
+		return this;
+	}
+
+	public Location removeRoom(Room room) {
+
+		if (this.rooms.contains(room)) {
+			this.rooms.remove(room);
+
+			if (room.getLocation() != null
+					&& room.getLocation().equals(this)) {
+				room.setLocation(null);
+			}
+		}
+
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "Location [id=" + id
@@ -158,6 +186,7 @@ public class Location {
 				+ ", website=" + website
 				+ ", phone=" + phone
 				+ ", shows=" + shows.size()
+				+ ", rooms=" + rooms.size()
 				+ "]";
 	}
 }
