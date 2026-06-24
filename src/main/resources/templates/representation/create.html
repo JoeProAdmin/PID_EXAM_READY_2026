@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Nouvelle représentation</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+
+        <h1>Nouvelle représentation</h1>
+
+        <form th:action="@{/representations/create}" method="post">
+
+            <div>
+                <label>Spectacle :</label>
+
+                <select name="showId" required>
+                    <option value="">-- Choisir un spectacle --</option>
+
+                    <option th:each="show : ${shows}"
+                            th:value="${show.id}"
+                            th:text="${show.title}">
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label>Salle :</label>
+
+                <select name="roomId" required>
+                    <option value="">-- Choisir une salle --</option>
+
+                    <option th:each="room : ${rooms}"
+                            th:value="${room.id}"
+                            th:text="${room.location.designation + ' - ' + room.name}">
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label>Date et heure :</label>
+
+                <input type="datetime-local"
+                       name="when"
+                       required>
+            </div>
+
+            <div>
+                <button type="submit">
+                    Ajouter
+                </button>
+
+                <a th:href="@{/representations}">
+                    Annuler
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

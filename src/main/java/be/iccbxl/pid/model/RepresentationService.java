@@ -1,5 +1,6 @@
 package be.iccbxl.pid.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,5 +56,9 @@ public class RepresentationService {
 
 	public List<Representation> getFromShow(Show show) {
 		return repository.findByShow(show);
+	}
+
+	public boolean isRoomOccupied(Room room, LocalDateTime when) {
+		return !repository.findByRoomAndWhen(room, when).isEmpty();
 	}
 }

@@ -13,18 +13,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Column;
 
 @Entity
 @Table(name="representations")
 public class Representation {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name="show_id", nullable=false)
 	private Show show;
 
+	@Column(name = "`when`")
 	private LocalDateTime when;
 
 	@ManyToOne
