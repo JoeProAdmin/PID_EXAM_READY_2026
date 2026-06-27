@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Liste des vidéos</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+
+        <h1 th:text="${title}">Liste des vidéos</h1>
+
+        <ul th:unless="${#lists.isEmpty(videos)}">
+            <li th:each="video : ${videos}">
+                <a th:href="@{/videos/{id}(id=${video.id})}"
+                   th:text="${video.title}">
+                    Titre vidéo
+                </a>
+
+                <span th:if="${video.show != null}">
+                    -
+                    <span th:text="${video.show.title}">Spectacle</span>
+                </span>
+            </li>
+        </ul>
+
+        <p th:if="${#lists.isEmpty(videos)}">Aucune vidéo.</p>
+
+    </div>
+</div>
+</body>
+</html>
