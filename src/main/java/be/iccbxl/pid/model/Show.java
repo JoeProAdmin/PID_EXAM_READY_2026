@@ -57,6 +57,8 @@ public class Show {
 	
 	@OneToMany(targetEntity=Representation.class, mappedBy="show")
 	private List<Representation> representations = new ArrayList<>();
+	@OneToMany(targetEntity = Video.class, mappedBy = "show")
+	private List<Video> videos = new ArrayList<>();
 
 	@ManyToMany(mappedBy = "shows")
 	private List<ArtistType> artistTypes = new ArrayList<>();
@@ -171,6 +173,33 @@ public class Show {
 
 	public Show removeRepresentation(Representation representation) {
 		this.representations.remove(representation);
+		return this;
+	}
+
+	public List<Video> getVideos() {
+		return videos;
+	}
+
+	public Show addVideo(Video video) {
+
+		if (!this.videos.contains(video)) {
+			this.videos.add(video);
+			video.setShow(this);
+		}
+
+		return this;
+	}
+
+	public Show removeVideo(Video video) {
+
+		if (this.videos.contains(video)) {
+			this.videos.remove(video);
+
+			if (video.getShow() != null && video.getShow().equals(this)) {
+				video.setShow(null);
+			}
+		}
+
 		return this;
 	}
 

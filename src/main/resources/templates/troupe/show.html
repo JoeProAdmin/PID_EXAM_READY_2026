@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Fiche d'une troupe</title>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div layout:fragment="content">
+
+        <h1 th:text="${troupe.name}">Nom de la troupe</h1>
+
+        <div>
+
+            <img th:if="${troupe.logoUrl != null}"
+                 th:src="${troupe.logoUrl}"
+                 width="50"
+                 alt="Logo"/>
+
+        </div>
+
+        <h2>Artistes</h2>
+
+        <ul th:unless="${#lists.isEmpty(troupe.artists)}">
+
+            <li th:each="artist : ${troupe.artists}">
+
+                <a th:href="@{/artists/{id}(id=${artist.id})}"
+                   th:text="${artist.firstname + ' ' + artist.lastname}">
+                    Artiste
+                </a>
+
+            </li>
+
+        </ul>
+
+        <div th:if="${#lists.isEmpty(troupe.artists)}">
+
+            Aucun artiste.
+
+        </div>
+
+        <br>
+
+        <nav>
+
+            <a th:href="@{/troupes}">
+
+                Retour à l'index
+
+            </a>
+
+        </nav>
+
+    </div>
+
+</div>
+
+</body>
+</html>

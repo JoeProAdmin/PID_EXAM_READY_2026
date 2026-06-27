@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Fiche d'une vidéo</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+
+        <h1 th:text="${video.title}">Titre vidéo</h1>
+
+        <p>
+            <strong>Spectacle :</strong>
+            <span th:if="${video.show != null}" th:text="${video.show.title}">Spectacle</span>
+            <em th:if="${video.show == null}">Non lié</em>
+        </p>
+
+        <div th:if="${video.videoUrl != null}">
+            <iframe th:src="${video.videoUrl}"
+                    width="560"
+                    height="315"
+                    frameborder="0"
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+        <p th:if="${video.videoUrl == null}">
+            Aucune URL vidéo.
+        </p>
+
+        <nav>
+            <a th:href="@{/videos}">Retour à l'index</a>
+        </nav>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <title>Liste des troupes</title>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div layout:fragment="content">
+
+        <h1 th:text="${title}">Liste des troupes</h1>
+
+        <ul th:unless="${#lists.isEmpty(troupes)}">
+
+            <li th:each="troupe : ${troupes}">
+
+                <a th:href="@{/troupes/{id}(id=${troupe.id})}"
+                   th:text="${troupe.name}">
+                    Nom
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+</body>
+</html>
