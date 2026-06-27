@@ -47,6 +47,36 @@
 				 Aucune représentation
 			 </p>
 
+			 <h2>Vidéos</h2>
+
+			 <div th:if="${#lists.size(show.videos) > 0}">
+
+				 <div th:each="video : ${show.videos}">
+
+					 <p>
+						 <strong th:text="${video.title}">
+							 Titre
+						 </strong>
+					 </p>
+
+					 <iframe
+							 th:src="${video.videoUrl}"
+						     width="560"
+						     height="315"
+						     frameborder="0"
+						     allowfullscreen>
+					 </iframe>
+
+					 <hr>
+
+				 </div>
+
+			 </div>
+
+			 <p th:if="${#lists.size(show.videos) == 0}">
+				 Aucune vidéo pour ce spectacle.
+			 </p>
+
 	        <h2>Liste des artistes</h2>
 	        <p><strong>Auteur:</strong>
 	        	<span th:each="auteur,iter : ${collaborateurs['auteur']}" th:text="${auteur.firstname}+' '+${auteur.lastname}
