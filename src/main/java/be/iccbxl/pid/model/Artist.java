@@ -8,31 +8,37 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="artists")
+@Table(name = "artists")
 public class Artist {
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotEmpty(message = "The firstname must not be empty.")
-	@Size(min=2, max=60, message = "The firstname must be between 2 and 60 characters long.")
+	@Size(min = 2, max = 60, message = "The firstname must be between 2 and 60 characters long.")
 	private String firstname;
-	
+
 	@NotEmpty(message = "The lastname must not be empty.")
-	@Size(min=2, max=60, message = "The lastname must be between 2 and 60 characters long.")
+	@Size(min = 2, max = 60, message = "The lastname must be between 2 and 60 characters long.")
 	private String lastname;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "troupe_id")
+	private Troupe troupe;
+
 	@ManyToMany(mappedBy = "artists")
 	private List<Type> types = new ArrayList<>();
 
-	protected Artist() {}
+	protected Artist() {
+	}
 
 	public Artist(String firstname, String lastname) {
 		this.firstname = firstname;
@@ -62,26 +68,34 @@ public class Artist {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-	
+
+	public Troupe getTroupe() {
+		return troupe;
+	}
+
+	public void setTroupe(Troupe troupe) {
+		this.troupe = troupe;
+	}
+
 	public List<Type> getTypes() {
 		return types;
 	}
 
 	public Artist addType(Type type) {
-		if(!this.types.contains(type)) {
+		if (!this.types.contains(type)) {
 			this.types.add(type);
 			type.addArtist(this);
 		}
-		
+
 		return this;
 	}
-	
+
 	public Artist removeType(Type type) {
-		if(this.types.contains(type)) {
+		if (this.types.contains(type)) {
 			this.types.remove(type);
 			type.getArtists().remove(this);
 		}
-		
+
 		return this;
 	}
 

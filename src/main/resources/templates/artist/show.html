@@ -1,30 +1,102 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
- layout:decorate="~{layouts/main}">
-<head>
-<title>Fiche d'un artiste</title>
-</head>
-<body>
-	<div class="container">
-	     <div layout:fragment="content">
-	        <h1 th:text="|${artist.firstname}  ${artist.lastname}|">Bob Sull</h1>
-	        
-	        <h2>Liste des types</h2>
-	        <ul th:unless="${#lists.isEmpty(artist.types)}">
-	        	<li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
-   	        </ul>
-   	        
-   	        <div class="actions">
-				<a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
-				<form th:id="|deleteForm-${artist.id}|" th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
-                 		<a href="#" th:onclick="|if(confirm('Confirm delete artist #${artist.id}')) 
-                 			document.getElementById('deleteForm-${artist.id}').submit(); 
-                 			return false;|">Delete</a>
-                 	</form>
-			</div>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
 
-   	        <nav><a th:href="@{/artists}">Retour à l'index</a></nav>
-	     </div>
+<head>
+	<title>Fiche d'un artiste</title>
+</head>
+
+<body>
+
+<div class="container">
+
+	<div layout:fragment="content">
+
+		<h1 th:text="|${artist.firstname} ${artist.lastname}|">
+			Bob Sull
+		</h1>
+
+		<h2>Liste des types</h2>
+
+		<ul th:unless="${#lists.isEmpty(artist.types)}">
+			<li th:each="type : ${artist.types}"
+			    th:text="${type.type}">
+				Type
+			</li>
+		</ul>
+
+		<hr>
+
+		<h2>Troupe</h2>
+
+		<div th:if="${artist.troupe != null}">
+
+			<p>
+				<strong>Nom :</strong>
+
+				<span th:text="${artist.troupe.name}">
+                    Nom de la troupe
+                </span>
+
+			</p>
+
+			<img
+					th:if="${artist.troupe.logoUrl != null}"
+					th:src="${artist.troupe.logoUrl}"
+					width="50"
+					alt="Logo"/>
+
+		</div>
+
+		<div th:if="${artist.troupe == null}">
+
+			<p>Non affilié</p>
+
+		</div>
+
+		<!--
+             Le formulaire d'affiliation administrateur
+             sera ajouté à l'étape suivante.
+        -->
+
+		<hr>
+
+		<div class="actions">
+
+			<a th:href="@{/artists/{id}/edit(id=${artist.id})}">
+				Edit
+			</a>
+
+			<form
+					th:id="|deleteForm-${artist.id}|"
+					th:action="@{/artists/{id}(id=${artist.id})}"
+					th:method="delete">
+
+				<a href="#"
+				   th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
+                   document.getElementById('deleteForm-${artist.id}').submit();
+                   return false;|">
+
+					Delete
+
+				</a>
+
+			</form>
+
+		</div>
+
+		<nav>
+
+			<a th:href="@{/artists}">
+				Retour à l'index
+			</a>
+
+		</nav>
+
 	</div>
+
+</div>
+
 </body>
 </html>
