@@ -15,11 +15,8 @@ public class VideoService {
     }
 
     public List<Video> getAll() {
-
         List<Video> videos = new ArrayList<>();
-
         repository.findAll().forEach(videos::add);
-
         return videos;
     }
 
@@ -27,20 +24,15 @@ public class VideoService {
         return repository.findById(id).orElse(null);
     }
 
-    public Video get(String id) {
-        Long indice = Long.parseLong(id);
-        return repository.findById(indice).orElse(null);
-    }
-
     public Video add(Video video) {
         return repository.save(video);
     }
 
-    public Video update(Video video) {
-        return repository.save(video);
+    public boolean videoUrlExists(String videoUrl) {
+        return repository.existsByVideoUrl(videoUrl);
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public List<Video> getByArtistLastname(String lastname) {
+        return repository.findDistinctByArtistLastname(lastname);
     }
 }

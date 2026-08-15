@@ -1,5 +1,6 @@
 package be.iccbxl.pid.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "videos")
@@ -18,9 +20,13 @@ public class Video {
     private Long id;
 
     @NotEmpty(message = "Le titre est obligatoire.")
+    @Size(max = 255, message = "Le titre ne peut pas dépasser 255 caractères.")
+    @Column(nullable = false, length = 255)
     private String title;
 
     @NotEmpty(message = "L'URL est obligatoire.")
+    @Size(max = 30, message = "L'URL ne peut pas dépasser 30 caractères.")
+    @Column(name = "video_url", nullable = false, unique = true, length = 30)
     private String videoUrl;
 
     @ManyToOne

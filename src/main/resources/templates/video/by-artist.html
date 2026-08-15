@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Vidéos par artiste</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+        <h1 th:text="${title}">Vidéos par artiste</h1>
+
+        <ul th:unless="${#lists.isEmpty(videos)}">
+            <li th:each="video : ${videos}">
+                <a th:href="@{/videos/{id}(id=${video.id})}"
+                   th:text="${video.title}">Vidéo</a>
+                —
+                <a th:href="@{/shows/{id}(id=${video.show.id})}"
+                   th:text="${video.show.title}">Spectacle</a>
+            </li>
+        </ul>
+
+        <p th:if="${#lists.isEmpty(videos)}"
+           th:text="|Aucune vidéo trouvée pour l'artiste ${lastname}.|">
+            Aucune vidéo trouvée.
+        </p>
+
+        <nav><a th:href="@{/videos}">Retour aux vidéos</a></nav>
+    </div>
+</div>
+</body>
+</html>
