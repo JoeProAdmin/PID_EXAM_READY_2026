@@ -92,7 +92,12 @@ public class VideoController {
         }
 
         service.add(new Video(cleanTitle, cleanVideoUrl, show));
-        redirectAttributes.addFlashAttribute("videoSuccess", "La vidéo a été ajoutée.");
+
+        redirectAttributes.addFlashAttribute(
+                "videoSuccess",
+                "La vidéo a été ajoutée.");
+        redirectAttributes.addFlashAttribute("videoTitle", "");
+        redirectAttributes.addFlashAttribute("videoUrl", "");
 
         return "redirect:/shows/" + show.getId();
     }
