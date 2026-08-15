@@ -31,9 +31,27 @@ public class RoomController {
     public String show(Model model, @PathVariable("id") Long id) {
         Room room = service.get(id);
 
+        if (room == null) {
+            return "redirect:/rooms";
+        }
+
         model.addAttribute("room", room);
         model.addAttribute("title", "Fiche d'une salle");
 
         return "room/show";
+    }
+
+    @GetMapping("/rooms/{id}/shows")
+    public String shows(Model model, @PathVariable("id") Long id) {
+        Room room = service.get(id);
+
+        if (room == null) {
+            return "redirect:/rooms";
+        }
+
+        model.addAttribute("room", room);
+        model.addAttribute("title", "Spectacles de la salle " + room.getName());
+
+        return "room/shows";
     }
 }

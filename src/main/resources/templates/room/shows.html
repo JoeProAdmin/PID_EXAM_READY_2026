@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Spectacles d'une salle</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+        <h1 th:text="${title}">Spectacles d'une salle</h1>
+
+        <p>
+            <strong>Lieu :</strong>
+            <span th:text="${room.location.designation}">Lieu</span>
+        </p>
+
+        <ul th:unless="${#lists.isEmpty(room.representations)}">
+            <li th:each="representation : ${room.representations}">
+                <a th:href="@{/shows/{id}(id=${representation.show.id})}"
+                   th:text="${representation.show.title}">Spectacle</a>
+                —
+                <span th:text="${#temporals.format(representation.when,'dd-MM-yyyy HH:mm')}">
+                    02-09-2026 10:00
+                </span>
+            </li>
+        </ul>
+
+        <p th:if="${#lists.isEmpty(room.representations)}">
+            Aucun spectacle programmé dans cette salle.
+        </p>
+
+        <nav>
+            <a th:href="@{/rooms/{id}(id=${room.id})}">Retour à la salle</a>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

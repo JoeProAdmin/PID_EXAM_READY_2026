@@ -15,4 +15,6 @@ public interface RepresentationRepository extends CrudRepository<Representation,
 
     List<Representation> findByRoomAndWhen(Room room, LocalDateTime when);
 
+    boolean existsByRoomAndWhen(Room room, LocalDateTime when);
+
 }

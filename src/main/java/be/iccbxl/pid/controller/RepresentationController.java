@@ -22,44 +22,43 @@ import be.iccbxl.pid.model.ShowService;
 public class RepresentationController {
 
 	@Autowired
-	RepresentationService service;
+	private RepresentationService service;
 
 	@Autowired
-	ShowService showService;
+	private ShowService showService;
 
 	@Autowired
-	RoomService roomService;
+	private RoomService roomService;
 
 	@GetMapping("/representations")
 	public String index(Model model) {
-
 		List<Representation> representations = service.getAll();
 
 		model.addAttribute("representations", representations);
-		model.addAttribute("title", "Liste des representations");
+		model.addAttribute("title", "Liste des représentations");
 
 		return "representation/index";
 	}
 
 	@GetMapping("/representations/{id}")
 	public String show(Model model, @PathVariable("id") String id) {
-
 		Representation representation = service.get(id);
+
+		if (representation == null) {
+			return "redirect:/representations";
+		}
 
 		model.addAttribute("representation", representation);
 		model.addAttribute("date", representation.getWhen().toLocalDate());
 		model.addAttribute("heure", representation.getWhen().toLocalTime());
-		model.addAttribute("title", "Fiche d'une representation");
+		model.addAttribute("title", "Fiche d'une représentation");
 
 		return "representation/show";
 	}
 
 	@GetMapping("/representations/create")
 	public String create(Model model) {
-
-		model.addAttribute("representation", new Representation());
-		model.addAttribute("shows", showService.getAll());
-		model.addAttribute("rooms", roomService.getAll());
+		prepareCreateForm(model, null, null, null);
 
 		return "representation/create";
 	}
@@ -72,20 +71,46 @@ public class RepresentationController {
 			Model model) {
 
 		Show show = showService.get(showId);
-
 		Room room = roomService.get(roomId);
 
-		LocalDateTime dateTime = LocalDateTime.parse(when);
+		if (show == null) {
+			return createWithError(
+					model,
+					"Le spectacle sélectionné n'existe pas.",
+					showId,
+					roomId,
+					when);
+		}
+
+		if (room == null) {
+			return createWithError(
+					model,
+					"La salle sélectionnée n'existe pas.",
+					showId,
+					roomId,
+					when);
+		}
+
+		LocalDateTime dateTime;
+
+		try {
+			dateTime = LocalDateTime.parse(when);
+		} catch (RuntimeException exception) {
+			return createWithError(
+					model,
+					"La date et l'heure sont invalides.",
+					showId,
+					roomId,
+					when);
+		}
 
 		if (service.isRoomOccupied(room, dateTime)) {
-
-			model.addAttribute("error",
-					"La salle est déjà occupée à cette date.");
-
-			model.addAttribute("shows", showService.getAll());
-			model.addAttribute("rooms", roomService.getAll());
-
-			return "representation/create";
+			return createWithError(
+					model,
+					"La salle est déjà occupée à cette date et à cette heure.",
+					showId,
+					roomId,
+					when);
 		}
 
 		Representation representation =
@@ -94,5 +119,36 @@ public class RepresentationController {
 		service.add(representation);
 
 		return "redirect:/representations/" + representation.getId();
+	}
+
+	private String createWithError(
+			Model model,
+			String error,
+			String selectedShowId,
+			Long selectedRoomId,
+			String selectedWhen) {
+
+		model.addAttribute("error", error);
+		prepareCreateForm(
+				model,
+				selectedShowId,
+				selectedRoomId,
+				selectedWhen);
+
+		return "representation/create";
+	}
+
+	private void prepareCreateForm(
+			Model model,
+			String selectedShowId,
+			Long selectedRoomId,
+			String selectedWhen) {
+
+		model.addAttribute("representation", new Representation());
+		model.addAttribute("shows", showService.getAll());
+		model.addAttribute("rooms", roomService.getAll());
+		model.addAttribute("selectedShowId", selectedShowId);
+		model.addAttribute("selectedRoomId", selectedRoomId);
+		model.addAttribute("selectedWhen", selectedWhen);
 	}
 }

@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RepresentationService {
 
-	@Autowired
-	private RepresentationRepository repository;
+	private final RepresentationRepository repository;
+
+	public RepresentationService(RepresentationRepository repository) {
+		this.repository = repository;
+	}
 
 	public List<Representation> getAll() {
 
@@ -59,6 +61,6 @@ public class RepresentationService {
 	}
 
 	public boolean isRoomOccupied(Room room, LocalDateTime when) {
-		return !repository.findByRoomAndWhen(room, when).isEmpty();
+		return repository.existsByRoomAndWhen(room, when);
 	}
 }

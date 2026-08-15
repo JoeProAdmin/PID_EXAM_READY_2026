@@ -32,6 +32,8 @@
         <p th:if="${#lists.isEmpty(room.representations)}">Aucune représentation.</p>
 
         <nav>
+            <a th:href="@{/rooms/{id}/shows(id=${room.id})}">Spectacles de cette salle</a>
+            -
             <a th:href="@{/rooms}">Retour à l'index</a>
         </nav>
     </div>
