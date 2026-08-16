@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -18,223 +19,129 @@ import javax.persistence.Table;
 import com.github.slugify.Slugify;
 
 @Entity
-@Table(name="shows")
+@Table(name = "shows")
 public class Show {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
 
-	@Column(unique=true)
-	private String slug;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	private String title;
-	private String description;
+    @Column(unique = true)
+    private String slug;
+    private String title;
+    private String description;
 
-	@Column(name="poster_url")
-	private String posterUrl;
-	
-	/**
-	 * Lieu de création du spectacle
-	 */
-	@ManyToOne
-	@JoinColumn(name="location_id", nullable=true)
-	private Location location;
-	
-	private boolean bookable;
-	private double price;
-	
-	/**
-	 * Date de création du spectacle
-	 */
-	@Column(name="created_at")
-	private LocalDateTime createdAt;
-	
-	/**
-	 * Date de modification du spectacle
-	 */
-	@Column(name="updated_at")
-	private LocalDateTime updatedAt;
-	
-	@OneToMany(targetEntity=Representation.class, mappedBy="show")
-	private List<Representation> representations = new ArrayList<>();
-	@OneToMany(targetEntity = Video.class, mappedBy = "show")
-	private List<Video> videos = new ArrayList<>();
+    @Column(name = "poster_url")
+    private String posterUrl;
 
-	@ManyToMany(mappedBy = "shows")
-	private List<ArtistType> artistTypes = new ArrayList<>();
-	
-	public Show() { }
-	
-	public Show(String title, String description, String posterUrl, Location location, boolean bookable,
-			double price) {
-		Slugify slg = new Slugify();
-		
-		this.slug = slg.slugify(title);
-		this.title = title;
-		this.description = description;
-		this.posterUrl = posterUrl;
-		this.location = location;
-		this.bookable = bookable;
-		this.price = price;
-		this.createdAt = LocalDateTime.now();
-		this.updatedAt = null;
-	}
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = true)
+    private Location location;
 
-	public Long getId() {
-		return id;
-	}
-	
-	public String getSlug() {
-		return slug;
-	}
+    private boolean bookable;
+    private double price;
 
-	private void setSlug(String slug) {
-		this.slug = slug;
-	}
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-	public String getTitle() {
-		return title;
-	}
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-	public void setTitle(String title) {
-		this.title = title;
-		
-		Slugify slg = new Slugify();
-		
-		this.setSlug(slg.slugify(title));
-	}
+    @OneToMany(targetEntity = Representation.class, mappedBy = "show")
+    private List<Representation> representations = new ArrayList<>();
 
-	public String getDescription() {
-		return description;
-	}
+    @OneToMany(targetEntity = Video.class, mappedBy = "show")
+    private List<Video> videos = new ArrayList<>();
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    @ManyToMany(mappedBy = "shows")
+    private List<ArtistType> artistTypes = new ArrayList<>();
 
-	public String getPosterUrl() {
-		return posterUrl;
-	}
+    @ManyToMany
+    @JoinTable(name = "show_tag",
+            joinColumns = @JoinColumn(name = "show_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private List<Tag> tags = new ArrayList<>();
 
-	public void setPosterUrl(String posterUrl) {
-		this.posterUrl = posterUrl;
-	}
+    public Show() {
+    }
 
-	public Location getLocation() {
-		return location;
-	}
+    public Show(String title, String description, String posterUrl, Location location,
+                boolean bookable, double price) {
+        this.slug = new Slugify().slugify(title);
+        this.title = title;
+        this.description = description;
+        this.posterUrl = posterUrl;
+        this.location = location;
+        this.bookable = bookable;
+        this.price = price;
+        this.createdAt = LocalDateTime.now();
+    }
 
-	public void setLocation(Location location) {
-		this.location.removeShow(this);		//déménager de l’ancien lieu
-		this.location = location;
-		this.location.addShow(this);		//emménager dans le nouveau lieu
-	}
+    public Long getId() { return id; }
+    public String getSlug() { return slug; }
+    private void setSlug(String slug) { this.slug = slug; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; setSlug(new Slugify().slugify(title)); }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getPosterUrl() { return posterUrl; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
+    public Location getLocation() { return location; }
 
-	public boolean isBookable() {
-		return bookable;
-	}
+    public void setLocation(Location location) {
+        if (this.location != null) {
+            this.location.removeShow(this);
+        }
+        this.location = location;
+        if (location != null) {
+            location.addShow(this);
+        }
+    }
 
-	public void setBookable(boolean bookable) {
-		this.bookable = bookable;
-	}
+    public boolean isBookable() { return bookable; }
+    public void setBookable(boolean bookable) { this.bookable = bookable; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public List<Representation> getRepresentations() { return representations; }
+    public List<Video> getVideos() { return videos; }
+    public List<ArtistType> getArtistTypes() { return artistTypes; }
+    public List<Tag> getTags() { return tags; }
 
-	public double getPrice() {
-		return price;
-	}
+    public Show addRepresentation(Representation representation) {
+        if (!representations.contains(representation)) { representations.add(representation); representation.setShow(this); }
+        return this;
+    }
+    public Show removeRepresentation(Representation representation) { representations.remove(representation); return this; }
+    public Show addVideo(Video video) {
+        if (!videos.contains(video)) { videos.add(video); video.setShow(this); }
+        return this;
+    }
+    public Show removeVideo(Video video) {
+        if (videos.remove(video) && this.equals(video.getShow())) { video.setShow(null); }
+        return this;
+    }
+    public Show addArtistType(ArtistType artistType) {
+        if (!artistTypes.contains(artistType)) { artistTypes.add(artistType); artistType.addShow(this); }
+        return this;
+    }
+    public Show removeArtistType(ArtistType artistType) {
+        if (artistTypes.remove(artistType)) { artistType.getShows().remove(this); }
+        return this;
+    }
+    public Show addTag(Tag tag) {
+        if (tag != null && !tags.contains(tag)) { tags.add(tag); tag.addShow(this); }
+        return this;
+    }
+    public Show removeTag(Tag tag) {
+        if (tags.remove(tag)) { tag.removeShow(this); }
+        return this;
+    }
 
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public List<Representation> getRepresentations() {
-		return representations;
-	}
-
-	public Show addRepresentation(Representation representation) {
-		if(!this.representations.contains(representation)) {
-			this.representations.add(representation);
-			representation.setShow(this);
-		}
-		
-		return this;
-	}
-
-	public Show removeRepresentation(Representation representation) {
-		this.representations.remove(representation);
-		return this;
-	}
-
-	public List<Video> getVideos() {
-		return videos;
-	}
-
-	public Show addVideo(Video video) {
-
-		if (!this.videos.contains(video)) {
-			this.videos.add(video);
-			video.setShow(this);
-		}
-
-		return this;
-	}
-
-	public Show removeVideo(Video video) {
-
-		if (this.videos.contains(video)) {
-			this.videos.remove(video);
-
-			if (video.getShow() != null && video.getShow().equals(this)) {
-				video.setShow(null);
-			}
-		}
-
-		return this;
-	}
-
-	/**
-     * Get the performances (artists in a type of collaboration) for the show
-     */
-	public List<ArtistType> getArtistTypes() {
-		return artistTypes;
-	}
-
-	public Show addArtistType(ArtistType artistType) {
-		if(!this.artistTypes.contains(artistType)) {
-			this.artistTypes.add(artistType);
-			artistType.addShow(this);
-		}
-		
-		return this;
-	}
-	
-	public Show removeArtistType(ArtistType artistType) {
-		if(this.artistTypes.contains(artistType)) {
-			this.artistTypes.remove(artistType);
-			artistType.getShows().remove(this);
-		}
-		
-		return this;
-	}
-	
-	@Override
-	public String toString() {
-		return "Show [id=" + id + ", slug=" + slug + ", title=" + title 
-			+ ", description=" + description + ", posterUrl=" + posterUrl + ", location=" 
-			+ location + ", bookable=" + bookable + ", price=" + price
-			+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
-			+ ", representations=" + representations.size() + "]";
-	}
-	
+    @Override
+    public String toString() {
+        return "Show [id=" + id + ", title=" + title + "]";
+    }
 }

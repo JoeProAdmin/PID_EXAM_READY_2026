@@ -4,26 +4,14 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layouts/main}">
-<head>
-    <title>Fiche d'un spectacle</title>
-</head>
+<head><title>Fiche d'un spectacle</title></head>
 <body>
 <div class="container">
     <div layout:fragment="content">
         <h1 th:text="${show.title}">Ayiti</h1>
-
-        <p th:if="${show.posterUrl}">
-            <img th:src="@{'/images/'+${show.posterUrl}}"
-                 th:alt="${show.title}" width="200">
-        </p>
-        <canvas th:unless="${show.posterUrl}" width="200" height="100"
-                style="border:1px solid #000000;"></canvas>
-
-        <p th:if="${show.location}">
-            <strong>Lieu de création :</strong>
-            <span th:text="${show.location.designation}">Art Center</span>
-        </p>
-
+        <p th:if="${show.posterUrl}"><img th:src="@{'/images/'+${show.posterUrl}}" th:alt="${show.title}" width="200"></p>
+        <canvas th:unless="${show.posterUrl}" width="200" height="100" style="border:1px solid #000000;"></canvas>
+        <p th:if="${show.location}"><strong>Lieu de création :</strong> <span th:text="${show.location.designation}">Art Center</span></p>
         <p><strong>Prix :</strong> <span th:text="${show.price} + ' €'">9.99 €</span></p>
         <p th:if="${show.bookable}"><em>Réservable</em></p>
         <p th:unless="${show.bookable}"><em>Non réservable</em></p>
@@ -31,85 +19,54 @@
         <h2>Liste des représentations</h2>
         <ul th:if="${#lists.size(show.representations) >= 1}">
             <li th:each="representation : ${show.representations}">
-                <span th:text="${#temporals.format(representation.when,'dd-MM-yyyy HH:mm')}">
-                    12-10-2012 13:30
-                </span>
-                -
-                <span th:text="${representation.room.location.designation}">Lieu</span>
-                -
+                <span th:text="${#temporals.format(representation.when,'dd-MM-yyyy HH:mm')}">12-10-2012 13:30</span> -
+                <span th:text="${representation.room.location.designation}">Lieu</span> -
                 <span th:text="${representation.room.name}">Salle</span>
             </li>
         </ul>
         <p th:if="${#lists.size(show.representations) == 0}">Aucune représentation</p>
 
+        <h2>Mots-clés</h2>
+        <ul th:unless="${#lists.isEmpty(show.tags)}">
+            <li th:each="tag : ${show.tags}" th:text="${tag.tag}">drame</li>
+        </ul>
+        <p th:if="${#lists.isEmpty(show.tags)}">Aucun mot-clé pour ce spectacle.</p>
+
+        <section sec:authorize="hasRole('ADMIN')">
+            <h3>Ajouter un mot-clé</h3>
+            <p th:if="${tagSuccess}" th:text="${tagSuccess}" style="color: green; font-weight: bold;" role="status"></p>
+            <p th:if="${tagError}" th:text="${tagError}" style="color: #b00020; font-weight: bold;" role="alert"></p>
+            <form th:action="@{/shows/{id}/tags(id=${show.id})}" method="post">
+                <label for="tag">Mot-clé :</label>
+                <input id="tag" name="tag" type="text" maxlength="30" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </section>
+
         <h2>Vidéos</h2>
-
-        <p th:if="${videoSuccess}" th:text="${videoSuccess}"
-           style="color: green; font-weight: bold;" role="status"></p>
-        <p th:if="${videoError}" th:text="${videoError}"
-           style="color: #b00020; font-weight: bold;" role="alert"></p>
-
+        <p th:if="${videoSuccess}" th:text="${videoSuccess}" style="color: green; font-weight: bold;" role="status"></p>
+        <p th:if="${videoError}" th:text="${videoError}" style="color: #b00020; font-weight: bold;" role="alert"></p>
         <div th:unless="${#lists.isEmpty(show.videos)}">
             <div th:each="video : ${show.videos}">
                 <p><strong th:text="${video.title}">Titre</strong></p>
-                <iframe th:src="${#strings.replace(video.videoUrl,
-                        'https://youtu.be/', 'https://www.youtube.com/embed/')}"
-                        width="560" height="315" frameborder="0"
-                        allowfullscreen></iframe>
-                <p>
-                    <a th:href="${video.videoUrl}" target="_blank" rel="noopener">
-                        Ouvrir la vidéo
-                    </a>
-                </p>
-                <hr>
+                <iframe th:src="${#strings.replace(video.videoUrl, 'https://youtu.be/', 'https://www.youtube.com/embed/')}" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                <p><a th:href="${video.videoUrl}" target="_blank" rel="noopener">Ouvrir la vidéo</a></p><hr>
             </div>
         </div>
-
-        <p th:if="${#lists.isEmpty(show.videos)}">
-            Aucune vidéo pour ce spectacle.
-        </p>
-
+        <p th:if="${#lists.isEmpty(show.videos)}">Aucune vidéo pour ce spectacle.</p>
         <section sec:authorize="hasRole('ADMIN')">
             <h3>Ajouter une vidéo</h3>
-
             <form th:action="@{/shows/{id}/videos(id=${show.id})}" method="post">
-                <div>
-                    <label for="videoTitle">Titre :</label>
-                    <input id="videoTitle" name="title" type="text"
-                           maxlength="255" th:value="${videoTitle}" required>
-                </div>
-                <div>
-                    <label for="videoUrl">URL :</label>
-                    <input id="videoUrl" name="videoUrl" type="url"
-                           maxlength="30" th:value="${videoUrl}" required>
-                </div>
+                <div><label for="videoTitle">Titre :</label><input id="videoTitle" name="title" type="text" maxlength="255" th:value="${videoTitle}" required></div>
+                <div><label for="videoUrl">URL :</label><input id="videoUrl" name="videoUrl" type="url" maxlength="30" th:value="${videoUrl}" required></div>
                 <button type="submit">Ajouter la vidéo</button>
             </form>
         </section>
 
         <h2>Liste des artistes</h2>
-        <p><strong>Auteur :</strong>
-            <span th:each="auteur,iter : ${collaborateurs['auteur']}"
-                  th:text="${auteur.firstname}+' '+${auteur.lastname}
-                  + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">
-                Firstname Lastname
-            </span>
-        </p>
-        <p><strong>Metteur en scène :</strong>
-            <span th:each="scenographe,iter : ${collaborateurs['scénographe']}"
-                  th:text="${scenographe.firstname}+' '+${scenographe.lastname}
-                  + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">
-                Firstname Lastname
-            </span>
-        </p>
-        <p><strong>Distribution :</strong>
-            <span th:each="comedien,iter : ${collaborateurs['comédien']}"
-                  th:text="${comedien.firstname}+' '+${comedien.lastname}
-                  + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">
-                Firstname Lastname
-            </span>
-        </p>
-
+        <p><strong>Auteur :</strong><span th:each="auteur,iter : ${collaborateurs['auteur']}" th:text="${auteur.firstname}+' '+${auteur.lastname} + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">Firstname Lastname</span></p>
+        <p><strong>Metteur en scène :</strong><span th:each="scenographe,iter : ${collaborateurs['scénographe']}" th:text="${scenographe.firstname}+' '+${scenographe.lastname} + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">Firstname Lastname</span></p>
+        <p><strong>Distribution :</strong><span th:each="comedien,iter : ${collaborateurs['comédien']}" th:text="${comedien.firstname}+' '+${comedien.lastname} + (${iter.count}==${iter.size}-1 ? ' et ':(${iter.last}?'':', '))">Firstname Lastname</span></p>
         <nav><a th:href="@{/shows}">Retour à l'index</a></nav>
     </div>
 </div>
