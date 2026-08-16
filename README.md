@@ -6,97 +6,33 @@ Projet Réservations réalisé avec Spring Boot.
 
 https://github.com/JoeProAdmin/PID_EXAM_READY_2026
 
----
-
 ## Technologies
 
 - Java 17
-- Spring Boot
+- Spring Boot 2.4.5
 - Spring MVC
+- Spring Data JPA
+- Spring Security
 - Thymeleaf
-- Maven
-- MySQL / MariaDB
-- Git
-- GitHub
-
----
+- Maven Wrapper
+- Flyway
+- MySQL / MariaDB XAMPP
+- Git et GitHub
 
 ## Architecture
 
-Le projet est organisé selon l'architecture Spring Boot :
+Le projet respecte l’architecture Spring Boot suivante :
 
-- Model
-- Repository
-- Service
-- Controller
-- Templates Thymeleaf
-
----
-
-## Fonctionnalités
-
-### Fonctionnalités de base
-
-- Gestion des artistes
-- Gestion des spectacles
-- Gestion des représentations
-- Gestion des salles
-- Gestion des lieux
-- Gestion des types
-- Gestion des utilisateurs
-- Gestion des rôles
-
-### Extensions développées
-
-- Gestion des troupes
-- Gestion des vidéos
-
-Les autres scénarios sont développés progressivement dans l'historique Git et les différentes versions du dépôt.
-
----
+- `model` : entités JPA, repositories et services ;
+- `controller` : routes MVC et API ;
+- `templates` : vues Thymeleaf ;
+- `db/migration` : migrations Flyway ;
+- `test` : tests unitaires et test de démarrage ;
+- `LISEZ-MOI-*.md` : documentation technique des fonctionnalités.
 
 ## Base de données
 
-Base MySQL :
+Base locale :
 
-```
+```text
 reservations_boot
-```
-
-Les scripts SQL complémentaires sont disponibles dans le dossier :
-
-```
-sql/
-```
-
----
-
-## Compilation
-
-```bash
-mvn clean compile
-```
-
-Résultat attendu :
-
-```
-BUILD SUCCESS
-```
-
----
-
-## Versionnement
-
-Le projet est entièrement versionné avec Git.
-
-Les différentes étapes de développement sont disponibles dans :
-
-- les commits ;
-- les branches ;
-- les tags Git.
-
----
-
-## Auteur
-
-Youssef Qarnouf
