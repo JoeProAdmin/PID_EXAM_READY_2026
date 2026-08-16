@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -36,6 +37,9 @@ public class Artist {
 
 	@ManyToMany(mappedBy = "artists")
 	private List<Type> types = new ArrayList<>();
+
+	@OneToMany(mappedBy = "artist")
+	private List<ArtistLanguage> artistLanguages = new ArrayList<>();
 
 	protected Artist() {
 	}
@@ -80,6 +84,8 @@ public class Artist {
 	public List<Type> getTypes() {
 		return types;
 	}
+
+	public List<ArtistLanguage> getArtistLanguages() { return artistLanguages; }
 
 	public Artist addType(Type type) {
 		if (!this.types.contains(type)) {

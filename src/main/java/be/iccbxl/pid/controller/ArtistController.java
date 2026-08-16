@@ -22,6 +22,7 @@ import be.iccbxl.pid.model.Artist;
 import be.iccbxl.pid.model.ArtistService;
 import be.iccbxl.pid.model.Troupe;
 import be.iccbxl.pid.model.TroupeService;
+import be.iccbxl.pid.model.ArtistLanguageService;
 
 @Controller
 public class ArtistController {
@@ -31,6 +32,7 @@ public class ArtistController {
 
     @Autowired
     private TroupeService troupeService;
+    @Autowired private ArtistLanguageService artistLanguageService;
 
     @GetMapping("/artists")
     public String index(Model model) {
@@ -49,8 +51,20 @@ public class ArtistController {
 
         model.addAttribute("artist", artist);
         model.addAttribute("troupes", troupeService.getAll());
+        model.addAttribute("isActor", artistLanguageService.isActor(artist));
+        model.addAttribute("languages", artistLanguageService.getLanguages());
+        model.addAttribute("levels", artistLanguageService.getLevels());
         model.addAttribute("title", "Fiche d'un artiste");
         return "artist/show";
+    }
+
+    @PostMapping("/artists/{id}/languages")
+    public String addLanguage(@PathVariable("id") String id, @RequestParam("languageId") String languageId,
+                              @RequestParam("level") String level, RedirectAttributes redirectAttributes) {
+        try { artistLanguageService.add(Long.parseLong(id), Long.parseLong(languageId), level);
+            redirectAttributes.addFlashAttribute("languageSuccess", "La langue a été ajoutée.");
+        } catch (RuntimeException exception) { redirectAttributes.addFlashAttribute("languageError", exception.getMessage()); }
+        return "redirect:/artists/" + id;
     }
 
     @PostMapping("/artists/{id}/troupe")

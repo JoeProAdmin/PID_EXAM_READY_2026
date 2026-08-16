@@ -14,7 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -26,12 +28,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/representations/create", "/shows/*/videos", "/artists/*/troupe",
-                        "/shows/*/tags", "/tarifs/create")
-                .hasRole("ADMIN")
-                .anyRequest().permitAll()
-                .and().formLogin()
-                .and().logout().permitAll();
+        http
+                .authorizeRequests()
+                    .antMatchers("/representations/create", "/shows/*/videos",
+                            "/artists/*/troupe", "/shows/*/tags", "/artists/*/languages")
+                    .hasRole("ADMIN")
+                    .anyRequest().permitAll()
+                .and()
+                    .formLogin()
+                .and()
+                    .logout().permitAll();
     }
 }

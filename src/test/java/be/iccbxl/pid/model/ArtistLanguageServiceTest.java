@@ -1,0 +1,2 @@
+package be.iccbxl.pid.model; import static org.junit.jupiter.api.Assertions.*; import static org.mockito.Mockito.*; import java.util.*; import org.junit.jupiter.api.Test;
+class ArtistLanguageServiceTest { @Test void rejectsUnknownLevel(){ArtistLanguageService s=new ArtistLanguageService(mock(ArtistRepository.class),mock(LanguageRepository.class),mock(ArtistLanguageRepository.class)); assertThrows(IllegalArgumentException.class,()->s.add(1L,1L,"EXPERT"));} }

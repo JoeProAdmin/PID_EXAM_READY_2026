@@ -27,6 +27,16 @@
             <p>Non affilié</p>
         </div>
 
+        <section th:if="${isActor}">
+            <h2>Langues parlées</h2>
+            <ul th:unless="${#lists.isEmpty(artist.artistLanguages)}"><li th:each="al : ${artist.artistLanguages}"><span th:text="${al.language.language}">Français</span> : <span th:text="${al.level}">COURANT</span></li></ul>
+            <p th:if="${#lists.isEmpty(artist.artistLanguages)}">Aucune langue enregistrée.</p>
+            <div sec:authorize="hasRole('ADMIN')">
+                <h3>Ajouter une langue</h3><p th:if="${languageSuccess}" th:text="${languageSuccess}"></p><p th:if="${languageError}" th:text="${languageError}"></p>
+                <form th:action="@{/artists/{id}/languages(id=${artist.id})}" method="post"><select name="languageId"><option th:each="language:${languages}" th:value="${language.id}" th:text="${language.language}">Langue</option></select><select name="level"><option th:each="level:${levels}" th:value="${level}" th:text="${level}">Niveau</option></select><button type="submit">Ajouter</button></form>
+            </div>
+        </section>
+
         <div sec:authorize="hasRole('ADMIN')">
             <hr>
             <h3>Modifier l'affiliation</h3>
