@@ -1,102 +1,61 @@
 <!DOCTYPE html>
 <html lang="fr"
       xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       layout:decorate="~{layouts/main}">
-
 <head>
-	<title>Fiche d'un artiste</title>
+    <title>Fiche d'un artiste</title>
 </head>
-
 <body>
-
 <div class="container">
+    <div layout:fragment="content">
+        <h1 th:text="|${artist.firstname} ${artist.lastname}|">Bob Sull</h1>
 
-	<div layout:fragment="content">
+        <h2>Liste des types</h2>
+        <ul th:unless="${#lists.isEmpty(artist.types)}">
+            <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
+        </ul>
 
-		<h1 th:text="|${artist.firstname} ${artist.lastname}|">
-			Bob Sull
-		</h1>
+        <hr>
+        <h2>Troupe</h2>
+        <div th:if="${artist.troupe != null}">
+            <p><strong>Nom :</strong> <span th:text="${artist.troupe.name}">Nom de la troupe</span></p>
+            <img th:if="${artist.troupe.logoUrl != null and !artist.troupe.logoUrl.isEmpty()}"
+                 th:src="${artist.troupe.logoUrl}" width="50" alt="Logo de la troupe"/>
+        </div>
+        <div th:if="${artist.troupe == null}">
+            <p>Non affilié</p>
+        </div>
 
-		<h2>Liste des types</h2>
+        <div sec:authorize="hasRole('ADMIN')">
+            <hr>
+            <h3>Modifier l'affiliation</h3>
+            <p th:if="${troupeSuccess}" th:text="${troupeSuccess}"></p>
+            <p th:if="${troupeError}" th:text="${troupeError}"></p>
+            <form th:action="@{/artists/{id}/troupe(id=${artist.id})}" method="post">
+                <label for="troupeId">Troupe</label>
+                <select id="troupeId" name="troupeId">
+                    <option value="" th:selected="${artist.troupe == null}">Non affilié</option>
+                    <option th:each="troupe : ${troupes}"
+                            th:value="${troupe.id}"
+                            th:text="${troupe.name}"
+                            th:selected="${artist.troupe != null and artist.troupe.id == troupe.id}">
+                        Nom de la troupe
+                    </option>
+                </select>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
 
-		<ul th:unless="${#lists.isEmpty(artist.types)}">
-			<li th:each="type : ${artist.types}"
-			    th:text="${type.type}">
-				Type
-			</li>
-		</ul>
-
-		<hr>
-
-		<h2>Troupe</h2>
-
-		<div th:if="${artist.troupe != null}">
-
-			<p>
-				<strong>Nom :</strong>
-
-				<span th:text="${artist.troupe.name}">
-                    Nom de la troupe
-                </span>
-
-			</p>
-
-			<img
-					th:if="${artist.troupe.logoUrl != null}"
-					th:src="${artist.troupe.logoUrl}"
-					width="50"
-					alt="Logo"/>
-
-		</div>
-
-		<div th:if="${artist.troupe == null}">
-
-			<p>Non affilié</p>
-
-		</div>
-
-		<!--
-             Le formulaire d'affiliation administrateur
-             sera ajouté à l'étape suivante.
-        -->
-
-		<hr>
-
-		<div class="actions">
-
-			<a th:href="@{/artists/{id}/edit(id=${artist.id})}">
-				Edit
-			</a>
-
-			<form
-					th:id="|deleteForm-${artist.id}|"
-					th:action="@{/artists/{id}(id=${artist.id})}"
-					th:method="delete">
-
-				<a href="#"
-				   th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
-                   document.getElementById('deleteForm-${artist.id}').submit();
-                   return false;|">
-
-					Delete
-
-				</a>
-
-			</form>
-
-		</div>
-
-		<nav>
-
-			<a th:href="@{/artists}">
-				Retour à l'index
-			</a>
-
-		</nav>
-
-	</div>
-
+        <hr>
+        <div class="actions">
+            <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
+            <form th:id="|deleteForm-${artist.id}|" th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
+                <a href="#" th:onclick="|if(confirm('Confirm delete artist #${artist.id}')) document.getElementById('deleteForm-${artist.id}').submit(); return false;|">Delete</a>
+            </form>
+        </div>
+        <nav><a th:href="@{/artists}">Retour à l'index</a></nav>
+    </div>
 </div>
-
 </body>
 </html>

@@ -21,20 +21,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
+                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
                 .and()
-                .withUser("member")
-                .password(passwordEncoder().encode("member"))
-                .roles("MEMBER");
+                .withUser("member").password(passwordEncoder().encode("member")).roles("MEMBER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/representations/create", "/shows/*/videos").hasRole("ADMIN")
+                    .antMatchers("/representations/create", "/shows/*/videos", "/artists/*/troupe")
+                    .hasRole("ADMIN")
                     .anyRequest().permitAll()
                 .and()
                     .formLogin()
