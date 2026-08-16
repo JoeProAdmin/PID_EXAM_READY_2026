@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Tarifs du spectacle</title></head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+        <h1 th:text="|Tarifs de ${show.title}|">Tarifs du spectacle</h1>
+        <p><strong>Prix normal :</strong> <span th:text="${show.price} + ' €'">9.00 €</span></p>
+        <p th:if="${tarifSuccess}" th:text="${tarifSuccess}" style="color: green; font-weight: bold;" role="status"></p>
+        <ul th:unless="${#lists.isEmpty(tarifs)}">
+            <li th:each="tarif : ${tarifs}">
+                <span th:text="${tarif.type}">senior</span> :
+                <span th:text="${tarif.prix} + ' €'">7.50 €</span>
+            </li>
+        </ul>
+        <p th:if="${#lists.isEmpty(tarifs)}">Aucun tarif spécial pour ce spectacle.</p>
+        <p><a th:href="@{/shows/{id}(id=${show.id})}">Retour au spectacle</a></p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head><title>Ajouter un tarif spécial</title></head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+        <h1>Ajouter un tarif spécial</h1>
+        <p th:if="${tarifError}" th:text="${tarifError}" style="color: #b00020; font-weight: bold;" role="alert"></p>
+        <form th:action="@{/tarifs/create}" method="post">
+            <p>
+                <label for="showId">Spectacle :</label>
+                <select id="showId" name="showId" required>
+                    <option value="">Sélectionnez un spectacle</option>
+                    <option th:each="show : ${shows}" th:value="${show.id}"
+                            th:text="${show.title}"
+                            th:selected="${selectedShowId != null and selectedShowId == show.id.toString()}">Spectacle</option>
+                </select>
+            </p>
+            <p>
+                <label for="type">Type :</label>
+                <select id="type" name="type" required>
+                    <option value="">Chargement des types...</option>
+                </select>
+            </p>
+            <p>
+                <label for="prix">Prix :</label>
+                <input id="prix" name="prix" type="number" min="0" step="0.01" required th:value="${selectedPrix}">
+            </p>
+            <button type="submit">Ajouter le tarif</button>
+        </form>
+        <p><a th:href="@{/shows}">Retour aux spectacles</a></p>
+    </div>
+</div>
+<th:block layout:fragment="scripts">
+<script th:inline="javascript">
+/*<![CDATA[*/
+const selectedType = /*[[${selectedType}]]*/ '';
+fetch('/api/tarifs/types')
+    .then(response => response.json())
+    .then(types => {
+        const select = document.getElementById('type');
+        select.innerHTML = '<option value="">Sélectionnez un type</option>';
+        types.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            option.selected = type === selectedType;
+            select.appendChild(option);
+        });
+    })
+    .catch(() => {
+        document.getElementById('type').innerHTML = '<option value="">Types indisponibles</option>';
+    });
+/*]]>*/
+</script>
+</th:block>
+</body>
+</html>

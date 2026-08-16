@@ -53,6 +53,9 @@ public class Show {
     @OneToMany(targetEntity = Video.class, mappedBy = "show")
     private List<Video> videos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "show")
+    private List<Tarif> tarifs = new ArrayList<>();
+
     @ManyToMany(mappedBy = "shows")
     private List<ArtistType> artistTypes = new ArrayList<>();
 
@@ -107,6 +110,7 @@ public class Show {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public List<Representation> getRepresentations() { return representations; }
     public List<Video> getVideos() { return videos; }
+    public List<Tarif> getTarifs() { return tarifs; }
     public List<ArtistType> getArtistTypes() { return artistTypes; }
     public List<Tag> getTags() { return tags; }
 
@@ -121,6 +125,14 @@ public class Show {
     }
     public Show removeVideo(Video video) {
         if (videos.remove(video) && this.equals(video.getShow())) { video.setShow(null); }
+        return this;
+    }
+    public Show addTarif(Tarif tarif) {
+        if (tarif != null && !tarifs.contains(tarif)) { tarifs.add(tarif); tarif.setShow(this); }
+        return this;
+    }
+    public Show removeTarif(Tarif tarif) {
+        if (tarifs.remove(tarif) && this.equals(tarif.getShow())) { tarif.setShow(null); }
         return this;
     }
     public Show addArtistType(ArtistType artistType) {
