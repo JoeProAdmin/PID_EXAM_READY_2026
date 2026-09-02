@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Typologies</title>
+</head>
+
+<body>
+
+<h1 th:text="${title}">Liste des typologies</h1>
+
+<ul>
+    <li th:each="typology : ${typologies}">
+        <a th:href="@{/typologies/{id}(id=${typology.id})}"
+           th:text="${typology.name}">
+            Typologie
+        </a>
+    </li>
+</ul>
+
+</body>
+
+</html>

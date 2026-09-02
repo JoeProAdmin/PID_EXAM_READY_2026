@@ -21,22 +21,32 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
+                .withUser("admin")
+                .password(passwordEncoder().encode("admin"))
+                .roles("ADMIN")
                 .and()
-                .withUser("member").password(passwordEncoder().encode("member")).roles("MEMBER");
+                .withUser("member")
+                .password(passwordEncoder().encode("member"))
+                .roles("MEMBER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/representations/create", "/shows/*/videos",
-                            "/artists/*/troupe", "/shows/*/tags", "/artists/*/languages")
-                    .hasRole("ADMIN")
-                    .anyRequest().permitAll()
+                .antMatchers(
+                        "/representations/create",
+                        "/shows/*/videos",
+                        "/artists/*/troupe",
+                        "/shows/*/tags",
+                        "/artists/*/languages",
+                        "/typologies/*/types"
+                )
+                .hasRole("ADMIN")
+                .anyRequest().permitAll()
                 .and()
-                    .formLogin()
+                .formLogin()
                 .and()
-                    .logout().permitAll();
+                .logout().permitAll();
     }
 }

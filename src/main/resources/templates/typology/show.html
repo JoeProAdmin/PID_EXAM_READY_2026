@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Typologie</title>
+</head>
+
+<body>
+
+<h1 th:text="${typology.name}">Typologie</h1>
+
+<div th:if="${success}" th:text="${success}"></div>
+<div th:if="${warning}" th:text="${warning}"></div>
+<div th:if="${info}" th:text="${info}"></div>
+<div th:if="${error}" th:text="${error}"></div>
+
+<h2>Artistes</h2>
+
+<ul th:if="${!#lists.isEmpty(artists)}">
+    <li th:each="artist : ${artists}">
+        <span th:text="${artist.firstname}">Prénom</span>
+        <span th:text="${artist.lastname}">Nom</span>
+    </li>
+</ul>
+
+<p th:if="${#lists.isEmpty(artists)}">Aucun artiste</p>
+
+<div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+
+    <h2>Ajouter un type</h2>
+
+    <form th:action="@{/typologies/{id}/types(id=${typology.id})}" method="post">
+
+        <label for="typeId">Type :</label>
+
+        <select id="typeId" name="typeId" required>
+            <option value="">-- Choisir un type --</option>
+
+            <option th:each="type : ${types}"
+                    th:value="${type.id}"
+                    th:text="${type.type}">
+                Type
+            </option>
+        </select>
+
+        <button type="submit">Ajouter</button>
+
+    </form>
+
+</div>
+
+<p>
+    <a th:href="@{/typologies}">Retour à la liste</a>
+</p>
+
+</body>
+
+</html>
